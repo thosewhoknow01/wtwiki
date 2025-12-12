@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Su-30 Mk2 AMV — Aircraft (Expanded)</title>
+
+  <!-- Inline CSS matching site style (keeps page self-contained) -->
+  <style>
+    :root{
+      --bg:#07121a;
+      --card:#0b1320;
+      --muted:#9aa6b2;
+      --text:#e6eef6;
+      --accent:#52a5ff;
+      --accent-2:#2b8cff;
+      --chip-bg:rgba(255,255,255,0.03);
+      --glass: rgba(255,255,255,0.02);
+      --radius:12px;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#04101a 0%, #07121a 100%);color:var(--text);-webkit-font-smoothing:antialiased}
+    .container{max-width:1200px;margin:28px auto;padding:28px;box-sizing:border-box}
+    header.page-header{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:20px;border-radius:var(--radius);box-shadow:0 6px 18px rgba(2,6,23,0.6);position:relative}
+    .header-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+    .title h1{margin:0;font-size:1.6rem;letter-spacing:-0.2px}
+    .badge{display:inline-block;background:var(--chip-bg);padding:6px 10px;border-radius:999px;color:var(--muted);font-size:0.85rem;margin-left:0.6rem}
+    .header-actions{display:flex;gap:0.5rem;align-items:center}
+    .btn{display:inline-flex;align-items:center;gap:0.5rem;padding:8px 12px;border-radius:10px;text-decoration:none;font-weight:700;font-size:0.95rem;color:var(--text);background:var(--glass);border:1px solid rgba(255,255,255,0.03)}
+    .btn-primary{background:linear-gradient(180deg,var(--accent),var(--accent-2));color:#07121a;border:1px solid rgba(0,0,0,0.12)}
+    .meta{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px}
+    .chip{background:var(--chip-bg);padding:6px 10px;border-radius:10px;color:var(--muted);font-size:0.9rem}
+
+    main.content{display:grid;grid-template-columns: 1fr 420px;gap:22px;margin-top:20px}
+    @media (max-width:1100px){ main.content{grid-template-columns:1fr} .header-actions{width:100%;justify-content:flex-start} }
+
+    /* left column card */
+    .card{background:var(--card);border-radius:14px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+    .card-media{display:flex;justify-content:center;align-items:center;padding:8px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border-radius:10px;margin-bottom:12px}
+    .vehicle-image{max-width:100%;height:auto;border-radius:8px;box-shadow:0 8px 30px rgba(11,19,32,0.6)}
+    .card-body h2{margin-top:0;color:var(--accent-2)}
+    .section-subtitle{margin-bottom:6px;color:var(--accent)}
+    .spec-list{list-style:none;padding:0;margin:0 0 12px 0}
+    .spec-list li{padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.02);display:flex;justify-content:space-between;align-items:center}
+    .spec-list li strong{color:var(--text)}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .stat{background:rgba(255,255,255,0.02);padding:10px;border-radius:10px;text-align:center}
+    .stat h4{margin:0;font-size:1.1rem;color:var(--accent-2)}
+    .stat p{margin:6px 0 0;color:var(--muted);font-size:0.9rem}
+
+    /* right column */
+    aside.side{position:relative}
+    .info-block{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));padding:14px;border-radius:12px;margin-bottom:12px}
+    .info-block h3{margin:0 0 8px 0;color:var(--accent)}
+    .key-val{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.02)}
+    .key-val:last-child{border-bottom:0}
+    .key{color:var(--muted)}
+    .val{color:var(--text);font-weight:700}
+
+    /* weapons table */
+    table.spec-table{width:100%;border-collapse:collapse;margin-top:8px}
+    table.spec-table th, table.spec-table td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.03);text-align:left;font-size:0.95rem;vertical-align:top}
+    table.spec-table th{color:var(--muted);font-weight:700}
+    .weap-type{font-weight:700;color:var(--accent)}
+    .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
+    .gallery img{width:100%;height:120px;object-fit:cover;border-radius:8px}
+
+    /* long text formatting */
+    .lead{color:var(--muted);line-height:1.6}
+    .note{font-size:0.9rem;color:var(--muted);margin-top:8px}
+    .divider{height:1px;background:rgba(255,255,255,0.02);margin:12px 0;border-radius:2px}
+
+    /* missile stat small table */
+    .missile-stats{width:100%;border-collapse:collapse;margin-top:8px}
+    .missile-stats th,.missile-stats td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.03);font-size:0.92rem}
+    .missile-stats th{background:rgba(255,255,255,0.01);color:var(--muted);text-align:left}
+    .badge-mini{display:inline-block;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,0.02);color:var(--muted);font-size:0.8rem}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="page-header">
+      <div class="header-inner">
+        <div class="title">
+          <h1>Su-30 Mk2 AMV — Multirole Fighter (Expanded)</h1>
+          <span class="badge">USSR / Russia • Su-30 family</span>
+        </div>
+
+        <div class="header-actions">
+          <a href="/" class="btn" aria-label="Go to home">Back</a>
+          <a href="/air/rus" class="btn" aria-label="Back to Russia air list">All Russia Air</a>
+          <a href="https://en.wikipedia.org/wiki/Sukhoi_Su-30" target="_blank" rel="noopener" class="btn btn-primary">Wiki</a>
+        </div>
+      </div>
+
+      <div class="meta">
+        <span class="chip">Rank: VIII</span>
+        <span class="chip">Battle rating AB / RB / SB: 12.7 / 12.7 / 12.7</span>
+        <span class="chip">Operator: Russia</span>
+        <span class="chip">Type: Multirole fighter (Air Superiority)</span>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- Left column: main content -->
+      <section class="card">
+        <div class="card-media">
+          <!-- Replace src with your static image path -->
+          <img src="/images/su30mk2.jpg" alt="Su-30 Mk2 AMV" class="vehicle-image" />
+        </div>
+
+        <div class="card-body">
+          <h2>Overview</h2>
+          <p class="lead">
+            The Su-30 Mk2 AMV is a two-seat, twin-engine multirole fighter derived from the Su-30 family.
+            It combines long-range strike capability with air-to-air performance and advanced avionics,
+            making it a flexible platform for both air superiority and ground attack missions.
+            This expanded page includes detailed missile statistics, typical loadouts, avionics notes,
+            and logistics considerations to match the depth of the T-80 page.
+          </p>
+
+          <div class="divider"></div>
+
+          <h3 class="section-subtitle">Key specifications</h3>
+          <ul class="spec-list">
+            <li><span><strong>Crew</strong></span><span class="muted">2 (pilot + weapon systems officer)</span></li>
+            <li><span><strong>Length</strong></span><span class="muted">21.9 m</span></li>
+            <li><span><strong>Wingspan</strong></span><span class="muted">14.7 m</span></li>
+            <li><span><strong>Height</strong></span><span class="muted">6.4 m</span></li>
+            <li><span><strong>Max takeoff weight</strong></span><span class="muted">34,500 kg</span></li>
+            <li><span><strong>Powerplant</strong></span><span class="muted">2 × turbofan engines with afterburner</span></li>
+            <li><span><strong>Max speed</strong></span><span class="muted">Mach 2+ (varies by loadout)</span></li>
+            <li><span><strong>Combat radius</strong></span><span class="muted">~1,500 km (mission dependent)</span></li>
+            <li><span><strong>Service ceiling</strong></span><span class="muted">~17,300 m</span></li>
+            <li><span><strong>Hardpoints</strong></span><span class="muted">12 (various pylons and centerline)</span></li>
+            <li><span><strong>Max payload</strong></span><span class="muted">~8,000 kg</span></li>
+          </ul>
+
+          <div class="two-col" style="margin-top:12px">
+            <div class="stat">
+              <h4>Avionics</h4>
+              <p class="muted">Multi-mode radar, IRST, targeting pod support</p>
+            </div>
+            <div class="stat">
+              <h4>Payload</h4>
+              <p class="muted">Up to 8,000 kg on 12 hardpoints</p>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <h3 class="section-subtitle">Avionics & Sensors</h3>
+          <p>
+            The Su-30 Mk2 AMV is fitted with a multi-mode pulse-Doppler radar capable of long-range target detection,
+            tracking multiple targets and guiding semi-active and active missiles. An IRST (infrared search and track)
+            system provides passive detection of heat-emitting targets. The aircraft integrates an electronic warfare (EW)
+            suite for self-protection and countermeasures, and supports targeting pods for precision-guided munitions.
+          </p>
+
+          <h3 class="section-subtitle">Weapons & Loadouts</h3>
+          <p>
+            Typical loadouts include a mix of short- and medium-range air-to-air missiles, anti-ship and anti-radiation
+            missiles, guided bombs, and unguided rockets. The internal 30 mm cannon provides close-range engagement capability.
+            Below are detailed missile statistics for common weapons carried by Su-30 variants.
+          </p>
+
+          <h3 class="section-subtitle">Missile statistics (detailed)</h3>
+
+          <!-- R-77 -->
+          <h4 style="margin-top:12px;color:var(--accent)">R-77 (AA-12 Adder) — Medium-range AAM</h4>
+          <table class="missile-stats" aria-label="R-77 stats">
+            <thead>
+              <tr>
+                <th>Attribute</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="weap-type">Role</td><td>Medium-range active radar homing air-to-air missile</td></tr>
+              <tr><td class="weap-type">Guidance</td><td>Inertial mid-course + active radar homing terminal</td></tr>
+              <tr><td class="weap-type">Range</td><td>~80–110 km (variant dependent)</td></tr>
+              <tr><td class="weap-type">Speed</td><td>~Mach 4</td></tr>
+              <tr><td class="weap-type">Warhead</td><td>High-explosive fragmentation, ~22–40 kg</td></tr>
+              <tr><td class="weap-type">Seeker</td><td>Active radar seeker (improved variants have AESA or improved seekers)</td></tr>
+              <tr><td class="weap-type">Notes</td><td>Fire-and-forget; good beyond-visual-range capability</td></tr>
+            </tbody>
+          </table>
+
+          <!-- R-73 -->
+          <h4 style="margin-top:12px;color:var(--accent)">R-73 (AA-11 Archer) — Short-range AAM</h4>
+          <table class="missile-stats" aria-label="R-73 stats">
+            <thead>
+              <tr><th>Attribute</th><th>Value</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="weap-type">Role</td><td>Short-range infrared-guided dogfight missile</td></tr>
+              <tr><td class="weap-type">Guidance</td><td>IR seeker, high off-boresight</td></tr>
+              <tr><td class="weap-type">Range</td><td>~20–30 km (depending on launch conditions)</td></tr>
+              <tr><td class="weap-type">Speed</td><td>~Mach 2.5–3</td></tr>
+              <tr><td class="weap-type">Warhead</td><td>High-explosive fragmentation, ~7–8 kg</td></tr>
+              <tr><td class="weap-type">Seeker</td><td>IR with high off-boresight capability; helmet cueing support</td></tr>
+              <tr><td class="weap-type">Notes</td><td>Excellent dogfight missile; very maneuverable</td></tr>
+            </tbody>
+          </table>
+
+          <!-- Kh-31 -->
+          <h4 style="margin-top:12px;color:var(--accent)">Kh-31 (AS-17 Krypton) — Anti-ship / Anti-radiation</h4>
+          <table class="missile-stats" aria-label="Kh-31 stats">
+            <thead><tr><th>Attribute</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td class="weap-type">Role</td><td>High-speed anti-ship and anti-radiation missile</td></tr>
+              <tr><td class="weap-type">Guidance</td><td>Active radar seeker (anti-ship) or passive radar homing (anti-radiation)</td></tr>
+              <tr><td class="weap-type">Range</td><td>~50–110 km (variant dependent)</td></tr>
+              <tr><td class="weap-type">Speed</td><td>Up to Mach 3.5 (high-speed boost phase)</td></tr>
+              <tr><td class="weap-type">Warhead</td><td>High-explosive or semi-armor-piercing, ~90–120 kg</td></tr>
+              <tr><td class="weap-type">Notes</td><td>Designed for stand-off strikes against ships and radar emitters</td></tr>
+            </tbody>
+          </table>
+
+          <!-- Kh-29 -->
+          <h4 style="margin-top:12px;color:var(--accent)">Kh-29 (AS-14 Kedge) — Air-to-surface precision</h4>
+          <table class="missile-stats" aria-label="Kh-29 stats">
+            <thead><tr><th>Attribute</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td class="weap-type">Role</td><td>Short-range air-to-surface precision missile</td></tr>
+              <tr><td class="weap-type">Guidance</td><td>TV/laser/infrared depending on variant</td></tr>
+              <tr><td class="weap-type">Range</td><td>~10–30 km</td></tr>
+              <tr><td class="weap-type">Speed</td><td>~Mach 0.8–1.2</td></tr>
+              <tr><td class="weap-type">Warhead</td><td>Large blast/fragmentation, ~320 kg (varies by subvariant)</td></tr>
+              <tr><td class="weap-type">Notes</td><td>Used for precision strikes against hardened targets and infrastructure</td></tr>
+            </tbody>
+          </table>
+
+          <!-- KAB guided bombs -->
+          <h4 style="margin-top:12px;color:var(--accent)">KAB Guided Bombs — Precision glide bombs</h4>
+          <table class="missile-stats" aria-label="KAB stats">
+            <thead><tr><th>Attribute</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td class="weap-type">Role</td><td>Guided glide bombs (laser/GPS/INS variants)</td></tr>
+              <tr><td class="weap-type">Guidance</td><td>Laser guidance or satellite/INS guidance</td></tr>
+              <tr><td class="weap-type">Range</td><td>Stand-off ranges up to 20–50 km with glide kits</td></tr>
+              <tr><td class="weap-type">Warhead</td><td>Various: 250 kg, 500 kg, 1000 kg options</td></tr>
+              <tr><td class="weap-type">Notes</td><td>High precision when used with targeting pods or laser designators</td></tr>
+            </tbody>
+          </table>
+
+          <div class="divider"></div>
+
+          <h3 class="section-subtitle">Typical mission loadouts</h3>
+          <p><strong>Air superiority:</strong> 4× R-77 (underwing/pylon), 2× R-73 (wingtip), internal cannon; ECM pod optional.</p>
+          <p><strong>Strike / Interdiction:</strong> 2× Kh-31 (stand-off), 2× Kh-29 or 4× KAB-500, targeting pod, external fuel tanks for extended range.</p>
+          <p><strong>Maritime strike:</strong> 2× Kh-31A (anti-ship), 2× Kh-35 (if available), anti-ship targeting pod, chaff/flare dispensers.</p>
+
+          <div class="divider"></div>
+
+          <h3 class="section-subtitle">Tactics and employment notes</h3>
+          <ul>
+            <li>Use R-77s for beyond-visual-range engagements; combine with AWACS or datalink for extended detection.</li>
+            <li>Employ R-73s in short-range, high-off-boresight engagements with helmet-mounted cueing for quick target acquisition.</li>
+            <li>For SEAD, pair Kh-31P (anti-radiation) with stand-off tactics to suppress enemy radars before strike packages enter contested airspace.</li>
+            <li>Use targeting pods and KABs for precision strikes to minimize collateral damage and increase mission success against hardened targets.</li>
+          </ul>
+
+          <div class="divider"></div>
+
+          <h3 class="section-subtitle">Maintenance & logistics</h3>
+          <p>
+            Field maintenance requires trained avionics technicians and access to spare modules for radar, flight control computers,
+            and engines. Missile integration requires certified pylons and wiring harnesses; guided munitions need pre-flight checks,
+            seeker boresight, and mission planning uploads. Warhead handling must follow ordnance safety protocols.
+          </p>
+
+          <div class="divider"></div>
+
+          <h3 class="section-subtitle">References & further reading</h3>
+          <p class="muted">
+            Replace this section with verified sources for production use. The missile statistics above are representative values;
+            exact performance varies by variant, launch conditions, and manufacturer upgrades.
+          </p>
+
+          <div class="note">
+            Replace image paths with your static assets in <code>src/main/resources/static/images/</code>. If your T-80 page uses dynamic model attributes,
+            add the same attributes in your controller for this view to populate values dynamically.
+          </div>
+        </div>
+      </section>
+
+      <!-- Right column: side info -->
+      <aside class="side">
+        <div class="info-block">
+          <h3>Quick facts</h3>
+          <div class="key-val"><span class="key">Manufacturer</span><span class="val">Sukhoi</span></div>
+          <div class="key-val"><span class="key">Introduced</span><span class="val">1990s (family)</span></div>
+          <div class="key-val"><span class="key">Crew</span><span class="val">2</span></div>
+          <div class="key-val"><span class="key">Max speed</span><span class="val">Mach 2+</span></div>
+          <div class="key-val"><span class="key">Service ceiling</span><span class="val">~17,300 m</span></div>
+        </div>
+
+        <div class="info-block">
+          <h3>Performance</h3>
+          <div class="key-val"><span class="key">Range</span><span class="val">~3,000 km ferry</span></div>
+          <div class="key-val"><span class="key">Combat radius</span><span class="val">~1,500 km</span></div>
+          <div class="key-val"><span class="key">Payload</span><span class="val">~8,000 kg</span></div>
+        </div>
+
+        <div class="info-block">
+          <h3>Systems</h3>
+          <div class="key-val"><span class="key">Radar</span><span class="val">Multi-mode pulse-Doppler</span></div>
+          <div class="key-val"><span class="key">IRST</span><span class="val">Electro-optical IRST</span></div>
+          <div class="key-val"><span class="key">EW</span><span class="val">Integrated ECM/Chaff/Flare</span></div>
+        </div>
+
+        <div class="info-block">
+          <h3>Recommended loadouts</h3>
+          <div style="font-size:0.95rem;color:var(--muted)">
+            <strong>Air superiority:</strong> 4× R-77, 2× R-73, internal cannon<br>
+            <strong>Strike:</strong> 2× Kh-31, 2× Kh-29, 4× guided bombs<br>
+            <strong>Maritime:</strong> 2× Kh-31A, anti-ship missiles, targeting pod
+          </div>
+        </div>
+
+        <div class="info-block">
+          <h3>Missile quick reference</h3>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div><span class="badge-mini">R-77</span> — Medium-range active radar; ~80–110 km; Mach ~4</div>
+            <div><span class="badge-mini">R-73</span> — Short-range IR; ~20–30 km; high off-boresight</div>
+            <div><span class="badge-mini">Kh-31</span> — Anti-ship/AR; ~50–110 km; Mach ~3.5</div>
+            <div><span class="badge-mini">Kh-29</span> — Air-to-surface; ~10–30 km; heavy warhead</div>
+            <div><span class="badge-mini">KAB</span> — Guided bombs; 250–1000 kg warheads; laser/GPS guidance</div>
+          </div>
+        </div>
+
+        <div class="info-block">
+          <h3>Notes</h3>
+          <p class="muted" style="margin:0">
+            This expanded page mirrors the layout and styling of the T-80 page and doubles the content by adding
+            detailed missile statistics, loadouts, tactics, and logistics notes.
+          </p>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="page-footer">
+      <small>Data and images are for demonstration purposes only. Replace content with verified sources for production use.</small>
+    </footer>
+  </div>
+</body>

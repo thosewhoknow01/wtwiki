@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Error — War Thunder Systems Wiki</title>
+
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --panel: #101620;
+      --card: #121b28;
+      --accent: #52a5ff;       /* air hover color start */
+      --accent-2: #6fd3a9;     /* air hover color end */
+      --text: #e7eef7;
+      --muted: #a9b7c7;
+      --danger: #ff4d4f;       /* red danger color */
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      margin: 0; padding: 0;
+      background: radial-gradient(1200px 800px at 20% 10%, #0f1621, var(--bg));
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+
+    .center {
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 920px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 14px;
+      padding: 2.25rem;
+      box-shadow: 0 20px 50px rgba(2,6,23,0.6);
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 1.25rem;
+      align-items: center;
+    }
+
+    .left {
+      padding-right: 1rem;
+    }
+
+    .title {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.6rem;
+      color: #d8e7ff;
+      letter-spacing: 0.2px;
+    }
+
+    .subtitle {
+      margin: 0 0 1rem 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .explain {
+      margin-top: 0.75rem;
+      color: #cfe6ff;
+      font-size: 0.98rem;
+    }
+
+    .right {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    /* button base */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 1.25rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.06);
+      background: linear-gradient(180deg,#0e1520,#0b1320); /* base (ground) color */
+      transition: background .18s ease, transform .12s ease, box-shadow .12s ease;
+      box-shadow: 0 12px 30px rgba(2,6,23,0.6);
+    }
+
+    /* hover/focus: turn into the air gradient and lift */
+    .btn:hover,
+    .btn:focus {
+      transform: translateY(-6px);
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      color: #07121a;
+      box-shadow: 0 18px 40px rgba(82,165,255,0.12);
+      outline: none;
+    }
+
+    .icon {
+      display:inline-flex;
+      width:44px;height:44px;border-radius:10px;
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.03);
+      color:var(--muted);
+      align-items:center;justify-content:center;font-weight:700;
+      margin-right:0.5rem;
+      flex: 0 0 44px;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size:0.92rem;
+    }
+
+    /* ensure the SVG scales nicely */
+    .icon svg { width:36px; height:36px; display:block; }
+
+    @media (max-width: 880px) {
+      .card { grid-template-columns: 1fr; text-align:center; padding:1.5rem; }
+      .left { padding:0; }
+      .right { margin-top:0.75rem; }
+      .icon { margin: 0 auto 12px auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="center">
+    <div class="card" role="alert" aria-labelledby="err-title" aria-describedby="err-desc">
+      <div class="left">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="icon" aria-hidden="true">
+            <!-- Red danger triangle with exclamation mark -->
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" role="img">
+              <defs>
+                <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+                  <stop offset="0" stop-color="#ff6b6b"/>
+                  <stop offset="1" stop-color="#ff3b3b"/>
+                </linearGradient>
+              </defs>
+              <!-- triangle -->
+              <path d="M1.5 20.5 L12 3.2 L22.5 20.5 Z" fill="url(#g)"></path>
+              <!-- exclamation stem -->
+              <rect x="11" y="8" width="2" height="6" rx="1" fill="#fff"></rect>
+              <!-- exclamation dot -->
+              <circle cx="12" cy="17.2" r="1.4" fill="#fff"></circle>
+            </svg>
+          </div>
+
+          <h1 id="err-title" class="title">There was an error</h1>
+        </div>
+
+        <p id="err-desc" class="subtitle">Sorry — something went wrong while loading the page. You can return to the home page and try again.</p>
+
+        <p class="explain small">If the problem persists, try refreshing the page or check back later. If you reached this page from a link, the resource may have moved or be temporarily unavailable.</p>
+      </div>
+
+      <div class="right">
+        <a class="btn" href="/" role="button" aria-label="Return to home page">Return to Home →</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
